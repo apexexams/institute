@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Institute Exam Directory | Apex Exams SaaS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Telugu:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --amber: #d97706;
+      --accent: #16a34a;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Noto Sans Telugu', sans-serif; }
+    body { background: var(--bg); color: var(--text); line-height: 1.6; padding-bottom: 50px; }
+
+    /* Top Header with Home Button */
+    header {
+      background: #0f172a; color: white; padding: 14px 20px;
+      border-bottom: 3px solid #f59e0b; position: sticky; top: 0; z-index: 50;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .brand-title { font-size: 1.1rem; font-weight: 900; color: #fbbf24; }
+    .home-btn {
+      background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4);
+      padding: 7px 14px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 0.88rem;
+      transition: 0.2s;
+    }
+    .home-btn:hover { background: #f59e0b; color: #0f172a; }
+
+    /* Banner */
+    .sub-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white; padding: 32px 16px; text-align: center;
+    }
+    .sub-banner h1 { font-size: 1.65rem; font-weight: 900; margin-bottom: 6px; }
+    .sub-banner p { color: #cbd5e1; font-size: 0.92rem; max-width: 650px; margin: 0 auto; }
+
+    /* Container & Sequential Exam List */
+    .container { max-width: 960px; margin: 26px auto; padding: 0 16px; }
+
+    .exam-row {
+      background: var(--card); border-radius: 14px; padding: 18px 20px;
+      border: 1.5px solid var(--border); box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+      margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 14px; transition: 0.2s;
+    }
+    .exam-row:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(2,132,199,0.1); }
+
+    .exam-left { display: flex; align-items: flex-start; gap: 14px; flex: 1; min-width: 260px; }
+    .seq-badge {
+      background: #0f172a; color: #38bdf8; font-weight: 900; font-size: 0.9rem;
+      padding: 8px 12px; border-radius: 10px; text-align: center; min-width: 56px; flex-shrink: 0;
+    }
+    .exam-info h3 { font-size: 1.08rem; font-weight: 800; color: #0f172a; margin-bottom: 3px; }
+    .exam-meta { font-size: 0.83rem; color: var(--muted); font-weight: 600; }
+
+    .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .tag {
+      font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 6px;
+      background: #e0f2fe; color: #0369a1;
+    }
+    .tag.live { background: #dcfce7; color: #166534; }
+    .tag.soon { background: #fef3c7; color: #92400e; }
+
+    .open-btn {
+      background: var(--primary); color: white; text-decoration: none;
+      padding: 11px 18px; border-radius: 10px; font-weight: 800; font-size: 0.88rem;
+      display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; white-space: nowrap;
+    }
+    .open-btn:hover { background: var(--primary-dark); }
+    .open-btn.disabled { background: #cbd5e1; color: #475569; pointer-events: none; }
+
+    @media (max-width: 600px) {
+      .open-btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-inner">
+      <div class="brand-title">🏫 Apex Exams • Institute Exam Directory</div>
+      <a href="index.html" class="home-btn">🏠 Home</a>
+    </div>
+  </header>
+
+  <section class="sub-banner">
+    <h1>Institute Exam Papers (Sequential List)</h1>
+    <p>Student, Coaching Center Director, లేదా Super Admin లాగిన్ కోసం కింది వరుసక్రమంలో ఉన్న ఏదైనా పరీక్ష పేపర్‌ను ఎంచుకోండి.</p>
+  </section>
+
+  <div class="container" id="examListContainer"></div>
+
+  <script>
+    // =========================================================================
+    // 📋 కొత్త పరీక్ష పేపర్ తయారు చేసిన ప్రతిసారీ ఈ లిస్ట్‌లో ఒక ఐటమ్ జత చేస్తే చాలు:
+    // =========================================================================
+    const EXAM_LIST = [
+      {
+        no: "01",
+        title: "TS SI Mains 2023 — Paper-1 (Arithmetic & Reasoning)",
+        details: "200 Questions • 200 Marks • 180 Minutes • Bilingual (English & తెలుగు)",
+        category: "SI & PC Mains",
+        status: "LIVE",
+        file: "si-mains-paper1.html"
+      },
+      {
+        no: "02",
+        title: "TS SI Mains 2023 — Paper-2 (General Studies)",
+        details: "200 Questions • 200 Marks • 180 Minutes • Bilingual (English & తెలుగు)",
+        category: "SI & PC Mains",
+        status: "COMING SOON",
+        file: "#"
+      },
+      {
+        no: "03",
+        title: "TG TET / DSC — Grand Mock Test Paper-1",
+        details: "150 Questions • 150 Marks • 150 Minutes • Bilingual (English & తెలుగు)",
+        category: "TET & DSC",
+        status: "COMING SOON",
+        file: "#"
+      },
+      {
+        no: "04",
+        title: "TGPSC Group-2 & Group-3 — General Studies Grand Test",
+        details: "150 Questions • 150 Marks • 150 Minutes • Bilingual (English & తెలుగు)",
+        category: "Groups",
+        status: "COMING SOON",
+        file: "#"
+      }
+    ];
+
+    const container = document.getElementById("examListContainer");
+    container.innerHTML = EXAM_LIST.map(exam => {
+      const isLive = exam.status === "LIVE";
+      return `
+        <div class="exam-row">
+          <div class="exam-left">
+            <div class="seq-badge">PAPER<br>#${exam.no}</div>
+            <div class="exam-info">
+              <h3>${exam.title}</h3>
+              <div class="exam-meta">${exam.details}</div>
+              <div class="tag-row">
+                <span class="tag">${exam.category}</span>
+                <span class="tag ${isLive ? 'live' : 'soon'}">${isLive ? '🟢 LIVE (Student / Director / Admin)' : '⏳ Preparing'}</span>
+              </div>
+            </div>
+          </div>
+          <a href="${exam.file}" class="open-btn ${isLive ? '' : 'disabled'}">
+            ${isLive ? 'Open Exam Portal ➔' : 'Coming Soon'}
+          </a>
+        </div>
+      `;
+    }).join("");
+  </script>
+
+</body>
+</html>
